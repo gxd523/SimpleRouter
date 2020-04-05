@@ -13,5 +13,5 @@ public @interface Route {
     /**
      * 将路由节点进行分组，可以实现按组动态加载
      */
-    String group() default "";
+    String group() default "default_group";
 }
