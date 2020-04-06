@@ -10,14 +10,16 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [moduleName: project.getName()]
+            }
+        }
     }
 }
 
 dependencies {
-    implementation project(path: ':annotation')
     annotationProcessor project(path: ':compiler')
+    implementation project(path: ':core')
 }
