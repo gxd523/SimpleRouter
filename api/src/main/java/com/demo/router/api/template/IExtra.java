@@ -1,4 +1,4 @@
-package com.demo.router.core.template;
+package com.demo.router.api.template;
 
 /**
  * 注入

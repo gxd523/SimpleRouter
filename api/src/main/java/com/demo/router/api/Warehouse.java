@@ -1,8 +1,8 @@
-package com.demo.router.core;
+package com.demo.router.api;
 
 import com.demo.router.annotation.RouteMeta;
-import com.demo.router.core.template.IRouteList;
-import com.demo.router.core.template.IProvider;
+import com.demo.router.api.template.IRouteList;
+import com.demo.router.api.template.IProvider;
 
 import java.util.HashMap;
 import java.util.Map;

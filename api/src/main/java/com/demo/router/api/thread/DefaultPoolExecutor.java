@@ -1,4 +1,4 @@
-package com.demo.router.core.thread;
+package com.demo.router.api.thread;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadFactory;

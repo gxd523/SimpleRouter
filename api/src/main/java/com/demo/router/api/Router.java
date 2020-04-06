@@ -1,4 +1,4 @@
-package com.demo.router.core;
+package com.demo.router.api;
 
 import android.app.Activity;
 import android.app.Application;
@@ -11,12 +11,12 @@ import android.util.Log;
 
 import com.demo.router.annotation.RouteConfig;
 import com.demo.router.annotation.RouteMeta;
-import com.demo.router.core.callback.NavigationCallback;
-import com.demo.router.core.exception.NoRouteFoundException;
-import com.demo.router.core.template.IProvider;
-import com.demo.router.core.template.IRouteGroup;
-import com.demo.router.core.template.IRouteList;
-import com.demo.router.core.utils.ClassUtils;
+import com.demo.router.api.callback.NavigationCallback;
+import com.demo.router.api.exception.NoRouteFoundException;
+import com.demo.router.api.template.IProvider;
+import com.demo.router.api.template.IRouteGroup;
+import com.demo.router.api.template.IRouteList;
+import com.demo.router.api.utils.ClassUtils;
 
 import java.util.Set;
 
@@ -85,7 +85,7 @@ public class Router {
     /**
      * 根据跳卡跳转页面
      */
-    <T extends IProvider> T navigation(Context context, final Postcard postcard, final int requestCode, final NavigationCallback callback) {
+    Object navigation(Context context, final Postcard postcard, final int requestCode, final NavigationCallback callback) {
         try {
             prepareCard(postcard);
         } catch (NoRouteFoundException e) {
@@ -133,7 +133,7 @@ public class Router {
                 });
                 break;
             case PROVIDER:
-                return (T) postcard.getProvider();
+                return postcard.getProvider();
             default:
                 break;
         }

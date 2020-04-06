@@ -1,9 +1,9 @@
-package com.demo.router.core;
+package com.demo.router.api;
 
 import android.app.Activity;
 import android.util.LruCache;
 
-import com.demo.router.core.template.IExtra;
+import com.demo.router.api.template.IExtra;
 
 public class ExtraManager {
     public static final String SUFFIX_AUTOWIRED = "$$Extra";

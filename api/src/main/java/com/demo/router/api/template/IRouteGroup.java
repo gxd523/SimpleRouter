@@ -1,4 +1,4 @@
-package com.demo.router.core.template;
+package com.demo.router.api.template;
 
 import java.util.Map;
 

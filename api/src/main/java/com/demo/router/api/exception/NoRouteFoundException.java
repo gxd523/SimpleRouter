@@ -1,4 +1,4 @@
-package com.demo.router.core.exception;
+package com.demo.router.api.exception;
 
 
 public class NoRouteFoundException extends RuntimeException {

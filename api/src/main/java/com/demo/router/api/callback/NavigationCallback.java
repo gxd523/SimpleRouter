@@ -1,6 +1,6 @@
-package com.demo.router.core.callback;
+package com.demo.router.api.callback;
 
-import com.demo.router.core.Postcard;
+import com.demo.router.api.Postcard;
 
 public interface NavigationCallback {
     /**

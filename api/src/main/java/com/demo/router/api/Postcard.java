@@ -1,4 +1,4 @@
-package com.demo.router.core;
+package com.demo.router.api;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.os.Parcelable;
 
 import com.demo.router.annotation.RouteMeta;
-import com.demo.router.core.callback.NavigationCallback;
-import com.demo.router.core.template.IProvider;
+import com.demo.router.api.callback.NavigationCallback;
+import com.demo.router.api.template.IProvider;
 
 import java.util.ArrayList;
 

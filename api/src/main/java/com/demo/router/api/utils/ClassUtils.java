@@ -1,4 +1,4 @@
-package com.demo.router.core.utils;
+package com.demo.router.api.utils;
 
 import android.app.Application;
 import android.content.Context;
@@ -6,7 +6,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
-import com.demo.router.core.thread.DefaultPoolExecutor;
+import com.demo.router.api.thread.DefaultPoolExecutor;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class ClassUtils {
     /**
      * 获得程序所有的apk(instant run会产生很多split apk)
      */
-    public static List<String> getApkPathList(Context context) throws PackageManager.NameNotFoundException {
+    private static List<String> getApkPathList(Context context) throws PackageManager.NameNotFoundException {
         ApplicationInfo applicationInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), 0);
         List<String> sourcePathList = new ArrayList<>();
         sourcePathList.add(applicationInfo.sourceDir);
@@ -53,7 +53,7 @@ public class ClassUtils {
                 public void run() {
                     DexFile dexfile = null;
                     try {
-                        //加载 apk中的dex 并遍历 获得所有包名为 {packageName} 的类
+                        // TODO: 2020/4/6 加载apk中的dex并遍历,获得所有包名为{packageName}的类
                         dexfile = new DexFile(apkPath);
                         Enumeration<String> dexEntries = dexfile.entries();
                         while (dexEntries.hasMoreElements()) {

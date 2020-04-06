@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.demo.router.annotation.Route;
-import com.demo.router.core.Router;
+import com.demo.router.api.Router;
 
 @Route(path = "/module2/activity")
 public class Module2Activity extends Activity {
