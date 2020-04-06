@@ -85,7 +85,7 @@ public class Router {
     /**
      * 根据跳卡跳转页面
      */
-    Object navigation(Context context, final Postcard postcard, final int requestCode, final NavigationCallback callback) {
+    <T extends IProvider> T navigation(Context context, final Postcard postcard, final int requestCode, final NavigationCallback callback) {
         try {
             prepareCard(postcard);
         } catch (NoRouteFoundException e) {
@@ -133,7 +133,7 @@ public class Router {
                 });
                 break;
             case PROVIDER:
-                return postcard.getService();
+                return (T) postcard.getProvider();
             default:
                 break;
         }
@@ -163,17 +163,17 @@ public class Router {
         } else {
             postcard.setAnnotatedClass(routeMeta.getAnnotatedClass());
             postcard.setType(routeMeta.getType());
-            Class<?> destination = postcard.getAnnotatedClass();
-            IProvider service = Warehouse.serviceMap.get(destination);
-            if (null == service) {
+            Class<?> annotatedClass = postcard.getAnnotatedClass();
+            IProvider provider = Warehouse.serviceMap.get(annotatedClass);
+            if (null == provider) {
                 try {
-                    service = (IProvider) destination.newInstance();
-                    Warehouse.serviceMap.put(destination, service);
+                    provider = (IProvider) annotatedClass.newInstance();
+                    Warehouse.serviceMap.put(annotatedClass, provider);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            postcard.setService(service);
+            postcard.setProvider(provider);
         }
     }
 

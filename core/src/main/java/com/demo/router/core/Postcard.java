@@ -30,7 +30,7 @@ public class Postcard extends RouteMeta {
     public int exitAnim;
 
     // 服务
-    public IProvider service;
+    public IProvider provider;
 
     public Postcard(String path, String group) {
         this(path, group, null);
@@ -53,12 +53,12 @@ public class Postcard extends RouteMeta {
         return exitAnim;
     }
 
-    public IProvider getService() {
-        return service;
+    public IProvider getProvider() {
+        return provider;
     }
 
-    public void setService(IProvider service) {
-        this.service = service;
+    public void setProvider(IProvider provider) {
+        this.provider = provider;
     }
 
     /**
