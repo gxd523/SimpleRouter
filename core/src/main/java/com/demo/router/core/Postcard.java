@@ -8,7 +8,7 @@ import android.os.Parcelable;
 
 import com.demo.router.annotation.RouteMeta;
 import com.demo.router.core.callback.NavigationCallback;
-import com.demo.router.core.template.IService;
+import com.demo.router.core.template.IProvider;
 
 import java.util.ArrayList;
 
@@ -16,27 +16,28 @@ import java.util.ArrayList;
  * 跳卡
  */
 public class Postcard extends RouteMeta {
-    private Bundle mBundle;
-    private int flags = -1;
+    public Bundle mBundle;
+    /**
+     * Intent的Flag
+     */
+    public int flags = -1;
     /**
      * 动画
      */
-    //新版 md风格
-    private Bundle optionsCompat;
+    public Bundle optionsCompat;
     //老版
-    private int enterAnim;
-    private int exitAnim;
+    public int enterAnim;
+    public int exitAnim;
 
     // 服务
-    private IService service;
+    public IProvider service;
 
     public Postcard(String path, String group) {
         this(path, group, null);
     }
 
     public Postcard(String path, String group, Bundle bundle) {
-        this.path = path;
-        this.group = group;
+        super(path, group);
         this.mBundle = (null == bundle ? new Bundle() : bundle);
     }
 
@@ -52,11 +53,11 @@ public class Postcard extends RouteMeta {
         return exitAnim;
     }
 
-    public IService getService() {
+    public IProvider getService() {
         return service;
     }
 
-    public void setService(IService service) {
+    public void setService(IProvider service) {
         this.service = service;
     }
 

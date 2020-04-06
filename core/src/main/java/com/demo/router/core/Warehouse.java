@@ -2,7 +2,7 @@ package com.demo.router.core;
 
 import com.demo.router.annotation.RouteMeta;
 import com.demo.router.core.template.IRouteList;
-import com.demo.router.core.template.IService;
+import com.demo.router.core.template.IProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,8 +12,10 @@ public class Warehouse {
     static Map<String, Class<? extends IRouteList>> routeListClassMap = new HashMap<>();
 
     // group 映射表 保存组中的所有数据
-    static Map<String, RouteMeta> routes = new HashMap<>();
+    static Map<String, RouteMeta> routeListMap = new HashMap<>();
+
+    static Map<String, Map<String, RouteMeta>> routeListGroupMap = new HashMap<>();
 
     // group 映射表 保存组中的所有数据
-    static Map<Class, IService> services = new HashMap<>();
+    static Map<Class, IProvider> serviceMap = new HashMap<>();
 }

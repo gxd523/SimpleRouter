@@ -6,8 +6,9 @@ import android.view.View;
 
 import com.demo.router.annotation.Route;
 import com.demo.router.core.Router;
+import com.demo.router.provider.Module1Provider;
 
-@Route(path = "/activity/home")
+@Route(path = "/main/activity")
 public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,15 +16,22 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
     }
 
-    public void jumpModule2(View v) {
+    public void jumpModule1(View v) {
         Router.getInstance()
-                .build("/activity/module2")
+                .build("/module1/activity")
                 .navigation();
     }
 
-    public void jumpModule1(View v) {
+    public void jumpModule2(View v) {
         Router.getInstance()
-                .build("/activity/module1")
+                .build("/module2/activity")
                 .navigation();
+    }
+
+    public void callModule1Provider(View v) {
+        Module1Provider module1Provider = (Module1Provider) Router.getInstance()
+                .build("/module1/provider")
+                .navigation();
+        module1Provider.provideModule1(this);
     }
 }

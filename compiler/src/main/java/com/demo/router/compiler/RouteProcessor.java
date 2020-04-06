@@ -122,21 +122,27 @@ public class RouteProcessor extends AbstractProcessor {
      */
     private void processRouteAnnotation(Set<? extends Element> elementSet) {
         TypeElement activityTypeElement = elementUtil.getTypeElement("android.app.Activity");
+        TypeElement providerTypeElement = elementUtil.getTypeElement("com.demo.router.core.template.IProvider");
 
         for (Element element : elementSet) {
+            RouteMeta.Type routeType;
             if (typeUtil.isSubtype(element.asType(), activityTypeElement.asType())) {
-                Route routeAnnotation = element.getAnnotation(Route.class);
-                RouteMeta routeMeta = new RouteMeta(
-                        RouteMeta.Type.ACTIVITY,
-                        element,
-                        null,
-                        routeAnnotation.path(),
-                        routeAnnotation.group()
-                );
-                addGroupMap(routeMeta);
+                routeType = RouteMeta.Type.ACTIVITY;
+            } else if (typeUtil.isSubtype(element.asType(), providerTypeElement.asType())) {
+                routeType = RouteMeta.Type.PROVIDER;
             } else {
                 throw new RuntimeException("[Just Support Activity/IService Route]:" + element);
             }
+
+            Route routeAnnotation = element.getAnnotation(Route.class);
+            RouteMeta routeMeta = new RouteMeta(
+                    routeType,
+                    routeAnnotation.path(),
+                    routeAnnotation.group(),
+                    null,
+                    element
+            );
+            addGroupMap(routeMeta);
         }
 
         //生成类需要实现的接口
@@ -145,17 +151,21 @@ public class RouteProcessor extends AbstractProcessor {
     }
 
     private void addGroupMap(RouteMeta routeMeta) {
-        if (!Utils.isEmpty(routeMeta.path) && routeMeta.path.startsWith("/")) {
-            List<RouteMeta> routeMetaList = groupMap.get(routeMeta.group);
+        String path = routeMeta.getPath();
+        if (!Utils.isEmpty(path) && path.startsWith("/")) {
+            if (Utils.isEmpty(routeMeta.getGroup())) {
+                routeMeta.setGroup(path.substring(1, path.indexOf('/', 1)));
+            }
+            List<RouteMeta> routeMetaList = groupMap.get(routeMeta.getGroup());
             if (Utils.isEmpty(routeMetaList)) {
                 routeMetaList = new ArrayList<>();
                 routeMetaList.add(routeMeta);
-                groupMap.put(routeMeta.group, routeMetaList);
+                groupMap.put(routeMeta.getGroup(), routeMetaList);
             } else {
                 routeMetaList.add(routeMeta);
             }
         } else {
-            log("错误的path格式-->" + routeMeta.path);
+            log("错误的path格式-->" + path);
         }
     }
 
@@ -183,14 +193,15 @@ public class RouteProcessor extends AbstractProcessor {
 
             for (RouteMeta routeMeta : groupEntry.getValue()) {
                 // atlas.put("/main/test",new RouteMeta(RouteMeta.Type.ACTIVITY,SecondActivity.class, "/main/test", "main"));
-                addRouteMethod.addStatement("routeMap.put($S, new $T($T.$L, $T.class, $S, $S))",
-                        routeMeta.path,
+                addRouteMethod.addStatement("routeMap.put($S, new $T($T.$L, $S, $S, $T.class))",
+                        routeMeta.getPath(),
                         ClassName.get(RouteMeta.class),
                         ClassName.get(RouteMeta.Type.class),
-                        routeMeta.type,
-                        ClassName.get((TypeElement) routeMeta.element),
-                        routeMeta.path.toLowerCase(),
-                        routeMeta.group.toLowerCase());
+                        routeMeta.getType(),
+                        routeMeta.getPath(),
+                        routeMeta.getGroup(),
+                        ClassName.get((TypeElement) routeMeta.getAnnotatedElement())
+                );
             }
 
             // Router$$ModuleName$$default_group

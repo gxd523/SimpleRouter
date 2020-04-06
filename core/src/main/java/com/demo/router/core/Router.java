@@ -13,9 +13,9 @@ import com.demo.router.annotation.RouteConfig;
 import com.demo.router.annotation.RouteMeta;
 import com.demo.router.core.callback.NavigationCallback;
 import com.demo.router.core.exception.NoRouteFoundException;
+import com.demo.router.core.template.IProvider;
 import com.demo.router.core.template.IRouteGroup;
 import com.demo.router.core.template.IRouteList;
-import com.demo.router.core.template.IService;
 import com.demo.router.core.utils.ClassUtils;
 
 import java.util.Set;
@@ -50,19 +50,16 @@ public class Router {
     }
 
     public Postcard build(String path) {
-        if (TextUtils.isEmpty(path)) {
-            throw new RuntimeException("路由地址无效!");
-        } else {
-            return build(path, extractGroup(path));
-        }
+        return build(path, null);
     }
 
     public Postcard build(String path, String group) {
-        if (TextUtils.isEmpty(path) || TextUtils.isEmpty(group)) {
-            throw new RuntimeException("路由地址无效!");
-        } else {
-            return new Postcard(path, group);
+        if (!TextUtils.isEmpty(path) && path.startsWith("/")) {
+            if (TextUtils.isEmpty(group)) {
+                return new Postcard(path, path.substring(1, path.indexOf('/', 1)));
+            }
         }
+        throw new RuntimeException("路由地址无效!");
     }
 
     /**
@@ -88,7 +85,7 @@ public class Router {
     /**
      * 根据跳卡跳转页面
      */
-    protected Object navigation(Context context, final Postcard postcard, final int requestCode, final NavigationCallback callback) {
+    Object navigation(Context context, final Postcard postcard, final int requestCode, final NavigationCallback callback) {
         try {
             prepareCard(postcard);
         } catch (NoRouteFoundException e) {
@@ -103,12 +100,12 @@ public class Router {
             callback.onFound(postcard);
         }
 
-        switch (postcard.type) {
+        switch (postcard.getType()) {
             case ACTIVITY:
                 final Context currentContext = null == context ? application : context;
-                final Intent intent = new Intent(currentContext, postcard.destination);
-                intent.putExtras(postcard.getExtras());
-                int flags = postcard.getFlags();
+                final Intent intent = new Intent(currentContext, postcard.getAnnotatedClass());
+                intent.putExtras(postcard.mBundle);
+                int flags = postcard.flags;
                 if (-1 != flags) {
                     intent.setFlags(flags);
                 } else if (!(currentContext instanceof Activity)) {
@@ -135,7 +132,7 @@ public class Router {
                     }
                 });
                 break;
-            case ISERVICE:
+            case PROVIDER:
                 return postcard.getService();
             default:
                 break;
@@ -146,47 +143,37 @@ public class Router {
     /**
      * 准备卡片
      */
-    private void prepareCard(Postcard card) {
-        RouteMeta routeMeta = Warehouse.routes.get(card.path);
-        //还没准备的
+    private void prepareCard(Postcard postcard) {
+        RouteMeta routeMeta = Warehouse.routeListMap.get(postcard.getPath());
         if (null == routeMeta) {
-            //创建并调用 loadInto 函数,然后记录在仓库
-            Class<? extends IRouteList> groupMeta = Warehouse.routeListClassMap.get(card.group);
-            if (null == groupMeta) {
-                throw new NoRouteFoundException("没找到对应路由: " + card.group + " " + card.path);
+            Class<? extends IRouteList> iRouteListClass = Warehouse.routeListClassMap.get(postcard.getGroup());
+            if (null == iRouteListClass) {
+                throw new NoRouteFoundException("没找到对应路由: " + postcard.getGroup() + " " + postcard.getPath());
             }
-            IRouteList iGroupInstance;
+            IRouteList iRouteList;
             try {
-                iGroupInstance = groupMeta.getConstructor().newInstance();
+                iRouteList = iRouteListClass.newInstance();
             } catch (Exception e) {
                 throw new RuntimeException("路由分组映射表记录失败.", e);
             }
-            iGroupInstance.addRoute(Warehouse.routes);
-            //已经准备过了就可以移除了 (不会一直存在内存中)
-            Warehouse.routeListClassMap.remove(card.group);
-            //再次进入 else
-            prepareCard(card);
+            iRouteList.addRoute(Warehouse.routeListMap);
+            // 已经准备过了就可以移除了 (不会一直存在内存中)
+            Warehouse.routeListClassMap.remove(postcard.getGroup());
+            prepareCard(postcard);
         } else {
-            //类 要跳转的activity 或IService实现类
-            card.destination = routeMeta.destination;
-            card.type = routeMeta.type;
-            switch (routeMeta.type) {
-                case ISERVICE:
-                    Class<?> destination = routeMeta.destination;
-                    IService service = Warehouse.services.get(destination);
-                    if (null == service) {
-                        try {
-                            service = (IService) destination.getConstructor().newInstance();
-                            Warehouse.services.put(destination, service);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    card.setService(service);
-                    break;
-                default:
-                    break;
+            postcard.setAnnotatedClass(routeMeta.getAnnotatedClass());
+            postcard.setType(routeMeta.getType());
+            Class<?> destination = postcard.getAnnotatedClass();
+            IProvider service = Warehouse.serviceMap.get(destination);
+            if (null == service) {
+                try {
+                    service = (IProvider) destination.newInstance();
+                    Warehouse.serviceMap.put(destination, service);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+            postcard.setService(service);
         }
     }
 

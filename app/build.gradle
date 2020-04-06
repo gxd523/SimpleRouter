@@ -21,5 +21,7 @@ android {
 
 dependencies {
     annotationProcessor project(path: ':compiler')
-    implementation project(path: ':core')
+    implementation project(path: ':provider')
+    implementation project(path: ':module1')
+    implementation project(path: ':module2')
 }
