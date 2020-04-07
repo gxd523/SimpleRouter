@@ -1,4 +1,4 @@
-package com.demo.router.compiler.utils;
+package com.demo.router.compiler.util;
 
 import java.util.Collection;
 import java.util.Map;

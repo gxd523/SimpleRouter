@@ -109,8 +109,8 @@ public class Router {
                     e.printStackTrace();
                 }
                 final Intent intent = new Intent(currentContext, annotatedClass);
-                intent.putExtras(postcard.mBundle);
-                int flags = postcard.flags;
+                intent.putExtras(postcard.getExtras());
+                int flags = postcard.getFlags();
                 if (-1 != flags) {
                     intent.setFlags(flags);
                 } else if (!(currentContext instanceof Activity)) {
@@ -185,8 +185,8 @@ public class Router {
     /**
      * 注入
      */
-    public void inject(Activity instance) {
-        ExtraManager.getInstance().loadExtras(instance);
+    public void inject(Object target) {
+        ExtraManager.getInstance().loadExtras(target);
     }
 
     private static final class Holder {

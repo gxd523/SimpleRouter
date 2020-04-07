@@ -3,7 +3,7 @@ package com.demo.router.compiler;
 import com.demo.router.annotation.Route;
 import com.demo.router.annotation.RouteConfig;
 import com.demo.router.annotation.RouteMeta;
-import com.demo.router.compiler.utils.Utils;
+import com.demo.router.compiler.util.Utils;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
@@ -48,7 +48,7 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 @AutoService(Processor.class)
 @SupportedOptions("moduleName")
 // 接收gradle配置中的annotationProcessorOptions参数,对应{@link AbstractProcessor#getSupportedOptions()}
-@SupportedSourceVersion(SourceVersion.RELEASE_8)// 指定使用的Java版本,对应AbstractProcessor.getSupportedSourceVersion()
+@SupportedSourceVersion(SourceVersion.RELEASE_7)// 指定使用的Java版本,对应AbstractProcessor.getSupportedSourceVersion()
 // 指定需要处理的注解,对应AbstractProcessor.getSupportedAnnotationTypes()
 // @SupportedAnnotationTypes("com.demo.router.annotation.Route")
 public class RouteProcessor extends AbstractProcessor {

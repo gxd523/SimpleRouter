@@ -19,6 +19,8 @@ public class MainActivity extends Activity {
     public void jumpModule1(View v) {
         Router.getInstance()
                 .build("/module1/activity")
+                .withInt("aaa", 112233)
+                .withString("bbb", "aabbcc")
                 .navigation();
         finish();
     }

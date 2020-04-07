@@ -11,4 +11,5 @@ public class RouteConfig {
     public static final String IROUTE_LIST_CLASS_NAME = "com.demo.router.api.template.IRouteList";
     public static final String IROUTE_GROUP_CLASS_NAME = "com.demo.router.api.template.IRouteGroup";
     public static final String IPROVIDER_CLASS_NAME = "com.demo.router.api.template.IProvider";
+    public static final String IEXTRA_CLASS_NAME = "com.demo.router.api.template.IExtra";
 }

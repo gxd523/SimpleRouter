@@ -5,10 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(value = ElementType.TYPE)
-@Retention(value = RetentionPolicy.CLASS)
-public @interface Route {
-    String path();
-
-    String group() default "";
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.CLASS)
+public @interface Extra {
+    String value() default "";
 }

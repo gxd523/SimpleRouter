@@ -16,29 +16,24 @@ import java.util.ArrayList;
  * 跳卡
  */
 public class Postcard extends RouteMeta {
-    public Bundle mBundle;
+    private Bundle mBundle = new Bundle();
     /**
      * Intent的Flag
      */
-    public int flags = -1;
+    private int flags = -1;
     /**
      * 动画
      */
-    public Bundle optionsCompat;
+    private Bundle optionsCompat;
     //老版
-    public int enterAnim;
-    public int exitAnim;
+    private int enterAnim;
+    private int exitAnim;
 
     // 服务
-    public IProvider provider;
+    private IProvider provider;
 
     public Postcard(String path, String group) {
-        this(path, group, null);
-    }
-
-    public Postcard(String path, String group, Bundle bundle) {
         super(path, group);
-        this.mBundle = (null == bundle ? new Bundle() : bundle);
     }
 
     public Bundle getExtras() {
@@ -119,7 +114,6 @@ public class Postcard extends RouteMeta {
         mBundle.putShort(key, value);
         return this;
     }
-
 
     public Postcard withInt(String key, int value) {
         mBundle.putInt(key, value);

@@ -1,46 +1,38 @@
 package com.demo.router.api;
 
-import android.app.Activity;
 import android.util.LruCache;
 
 import com.demo.router.api.template.IExtra;
 
 public class ExtraManager {
-    public static final String SUFFIX_AUTOWIRED = "$$Extra";
-
-    private static ExtraManager instance;
     private LruCache<String, IExtra> classCache;
 
-    public ExtraManager() {
+    private ExtraManager() {
         classCache = new LruCache<>(66);
     }
 
     public static ExtraManager getInstance() {
-        if (instance == null) {
-            synchronized (Router.class) {
-                if (instance == null) {
-                    instance = new ExtraManager();
-                }
-            }
-        }
-        return instance;
+        return Holder.instance;
     }
 
-    /**
-     * 注入
-     */
-    public void loadExtras(Activity instance) {
-        //查找对应activity的缓存
-        String className = instance.getClass().getName();
-        IExtra iExtra = classCache.get(className);
-        try {
-            if (null == iExtra) {
-                iExtra = (IExtra) Class.forName(instance.getClass().getName() + SUFFIX_AUTOWIRED).getConstructor().newInstance();
+    public void loadExtras(Object target) {
+        Class<?> targetClass = target.getClass();
+        IExtra iExtra = classCache.get(targetClass.getName());
+        if (null == iExtra) {
+            String extraClassName = String.format("%s.Extra$$%s", targetClass.getPackage().getName(), targetClass.getSimpleName());
+            try {
+                iExtra = (IExtra) Class.forName(extraClassName).newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            iExtra.loadExtra(instance);
-            classCache.put(className, iExtra);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+        if (iExtra != null) {
+            iExtra.loadExtra(target);
+            classCache.put(targetClass.getName(), iExtra);
+        }
+    }
+
+    private static final class Holder {
+        private static final ExtraManager instance = new ExtraManager();
     }
 }
