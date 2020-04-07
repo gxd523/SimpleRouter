@@ -122,7 +122,7 @@ public class RouteProcessor extends AbstractProcessor {
      */
     private void processRouteAnnotation(Set<? extends Element> elementSet) {
         TypeElement activityTypeElement = elementUtil.getTypeElement("android.app.Activity");
-        TypeElement providerTypeElement = elementUtil.getTypeElement("com.demo.router.core.template.IProvider");
+        TypeElement providerTypeElement = elementUtil.getTypeElement(RouteConfig.IPROVIDER_CLASS_NAME);
 
         for (Element element : elementSet) {
             RouteMeta.Type routeType;

@@ -3,8 +3,6 @@
     package="com.demo.router.module1">
 
     <application>
-        <activity
-            android:name=".Module1Activity"
-            android:launchMode="singleTask" />
+        <activity android:name=".Module1Activity" />
     </application>
 </manifest>

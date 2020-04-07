@@ -22,6 +22,13 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="callMainProvider"
+        android:text="调用Main的方法"
+        android:textSize="32sp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:onClick="jumpModule2"
         android:text="跳转Module2Activity"
         android:textSize="32sp" />

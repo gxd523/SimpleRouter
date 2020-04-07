@@ -13,6 +13,6 @@ import com.demo.router.provider.Module1Provider;
 public class Module1ProviderImpl implements Module1Provider {
     @Override
     public void provideModule1(Context context) {
-        Toast.makeText(context, "Module1ProviderImpl.provideModule1()调用成功!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Module1ProviderImpl.provideModule1()..." + context.getClass().getSimpleName(), Toast.LENGTH_SHORT).show();
     }
 }

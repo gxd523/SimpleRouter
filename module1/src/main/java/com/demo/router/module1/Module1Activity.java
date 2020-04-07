@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.demo.router.annotation.Route;
 import com.demo.router.api.Router;
+import com.demo.router.provider.MainProvider;
 
 @Route(path = "/module1/activity")
 public class Module1Activity extends Activity {
@@ -19,11 +20,20 @@ public class Module1Activity extends Activity {
         Router.getInstance()
                 .build("/main/activity")
                 .navigation();
+        finish();
+    }
+
+    public void callMainProvider(View v) {
+        MainProvider mainProvider = (MainProvider) Router.getInstance()
+                .build("/main/provider")
+                .navigation();
+        mainProvider.providerMain(this);
     }
 
     public void jumpModule2(View v) {
         Router.getInstance()
                 .build("/module2/activity")
                 .navigation();
+        finish();
     }
 }

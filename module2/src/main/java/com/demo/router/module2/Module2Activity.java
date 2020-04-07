@@ -19,11 +19,13 @@ public class Module2Activity extends Activity {
         Router.getInstance()
                 .build("/main/activity")
                 .navigation();
+        finish();
     }
 
     public void jumpModule1(View v) {
         Router.getInstance()
                 .build("/module1/activity")
                 .navigation();
+        finish();
     }
 }

@@ -20,12 +20,14 @@ public class MainActivity extends Activity {
         Router.getInstance()
                 .build("/module1/activity")
                 .navigation();
+        finish();
     }
 
     public void jumpModule2(View v) {
         Router.getInstance()
                 .build("/module2/activity")
                 .navigation();
+        finish();
     }
 
     public void callModule1Provider(View v) {
