@@ -139,8 +139,7 @@ public class RouteProcessor extends AbstractProcessor {
                     routeType,
                     routeAnnotation.path(),
                     routeAnnotation.group(),
-                    null,
-                    element
+                    element.toString()
             );
             addGroupMap(routeMeta);
         }
@@ -193,14 +192,14 @@ public class RouteProcessor extends AbstractProcessor {
 
             for (RouteMeta routeMeta : groupEntry.getValue()) {
                 // atlas.put("/main/test",new RouteMeta(RouteMeta.Type.ACTIVITY,SecondActivity.class, "/main/test", "main"));
-                addRouteMethod.addStatement("routeMap.put($S, new $T($T.$L, $S, $S, $T.class))",
+                addRouteMethod.addStatement("routeMap.put($S, new $T($T.$L, $S, $S, $S))",
                         routeMeta.getPath(),
                         ClassName.get(RouteMeta.class),
                         ClassName.get(RouteMeta.Type.class),
                         routeMeta.getType(),
                         routeMeta.getPath(),
                         routeMeta.getGroup(),
-                        ClassName.get((TypeElement) routeMeta.getAnnotatedElement())
+                        routeMeta.getAnnotatedClassName()
                 );
             }
 

@@ -90,7 +90,6 @@ public class Router {
             prepareCard(postcard);
         } catch (NoRouteFoundException e) {
             e.printStackTrace();
-            //没找到
             if (null != callback) {
                 callback.onLost(postcard);
             }
@@ -103,7 +102,13 @@ public class Router {
         switch (postcard.getType()) {
             case ACTIVITY:
                 final Context currentContext = null == context ? application : context;
-                final Intent intent = new Intent(currentContext, postcard.getAnnotatedClass());
+                Class<?> annotatedClass = null;
+                try {
+                    annotatedClass = Class.forName(postcard.getAnnotatedClassName());
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                final Intent intent = new Intent(currentContext, annotatedClass);
                 intent.putExtras(postcard.mBundle);
                 int flags = postcard.flags;
                 if (-1 != flags) {
@@ -161,17 +166,17 @@ public class Router {
             Warehouse.routeListClassMap.remove(postcard.getGroup());
             prepareCard(postcard);
         } else {
-            postcard.setAnnotatedClass(routeMeta.getAnnotatedClass());
+            String annotatedClassName = routeMeta.getAnnotatedClassName();
+            postcard.setAnnotatedClassName(annotatedClassName);
             postcard.setType(routeMeta.getType());
-            Class<?> annotatedClass = postcard.getAnnotatedClass();
-            IProvider provider = Warehouse.serviceMap.get(annotatedClass);
+            IProvider provider = Warehouse.serviceMap.get(annotatedClassName);
             if (null == provider) {
                 try {
-                    provider = (IProvider) annotatedClass.newInstance();
-                    Warehouse.serviceMap.put(annotatedClass, provider);
+                    provider = (IProvider) Class.forName(annotatedClassName).newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                Warehouse.serviceMap.put(annotatedClassName, provider);
             }
             postcard.setProvider(provider);
         }
