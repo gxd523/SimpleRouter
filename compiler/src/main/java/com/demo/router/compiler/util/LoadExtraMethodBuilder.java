@@ -45,14 +45,14 @@ public class LoadExtraMethodBuilder {
         extraName = Utils.isEmpty(extraName) ? fieldName : extraName;
         String statement;
         switch (typeMirror.toString()) {
-            case "BOOLEAN":
-            case "BYTE":
-            case "SHORT":
-            case "INT":
-            case "LONG":
-            case "CHAR":
-            case "FLOAT":
-            case "DOUBLE":
+            case "boolean":
+            case "byte":
+            case "short":
+            case "int":
+            case "long":
+            case "char":
+            case "float":
+            case "double":
                 String middle = kind.name();
                 statement = String.format("t.%s = t.getIntent().get%s%sExtra($S, t.%s)", fieldName, middle.charAt(0), middle.toLowerCase().substring(1), fieldName);
                 builder.addStatement(statement, extraName);

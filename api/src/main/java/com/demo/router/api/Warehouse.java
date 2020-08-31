@@ -14,7 +14,7 @@ public class Warehouse {
     // group 映射表 保存组中的所有数据
     static Map<String, RouteMeta> routeListMap = new HashMap<>();
 
-    static Map<String, Map<String, RouteMeta>> routeListGroupMap = new HashMap<>();
+//    static Map<String, Map<String, RouteMeta>> routeListGroupMap = new HashMap<>();
 
     // group 映射表 保存组中的所有数据
     static Map<String, IProvider> serviceMap = new HashMap<>();

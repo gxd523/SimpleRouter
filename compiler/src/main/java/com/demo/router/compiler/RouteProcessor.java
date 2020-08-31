@@ -42,7 +42,7 @@ import javax.tools.Diagnostic;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
- * 在这个类上添加了@AutoService注解，它的作用是用来生成META-INF/services/javax.annotation.processing.Processor文件的
+ * 在这个类上添加了@AutoService注解，它的作用是用来生成build/classes/java/main/META-INF/services/javax.annotation.processing.Processor文件的
  * auto-service是Google开发的一个库，使用时需要在factory-compiler中添加依赖
  */
 @AutoService(Processor.class)
@@ -67,9 +67,12 @@ public class RouteProcessor extends AbstractProcessor {
     private Elements elementUtil;
 
     /**
-     * 分组 key:组名 value:对应的路由信息
+     * 分组 key:组名 value:对应的路由信息集合
      */
     private Map<String, List<RouteMeta>> groupMap = new HashMap<>();
+    /**
+     * key:组名 value:RouteList类名
+     */
     private Map<String, String> rootMap = new TreeMap<>();
     /**
      * log
@@ -101,7 +104,7 @@ public class RouteProcessor extends AbstractProcessor {
     /**
      * 相当于main函数，正式处理注解
      *
-     * @param set              注解集合
+     * @param set              注解集合(app、module1、module2都用了@Route注解，所以集合有三个元素都为@Route)
      * @param roundEnvironment 表示当前或是之前的运行环境,可以通过该对象查找找到的注解。
      * @return true 表示后续处理器不会再处理(已经处理)
      */
@@ -109,7 +112,7 @@ public class RouteProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         if (!Utils.isEmpty(set)) {
             Set<? extends Element> elementSet = roundEnvironment.getElementsAnnotatedWith(Route.class);
-            if (!Utils.isEmpty(elementSet)) {
+            if (!Utils.isEmpty(elementSet)) {// 使用了Route注解的类的集合
                 processRouteAnnotation(elementSet);
             }
             return true;
@@ -144,7 +147,7 @@ public class RouteProcessor extends AbstractProcessor {
             addGroupMap(routeMeta);
         }
 
-        //生成类需要实现的接口
+        // 生成类需要实现的接口
         generatedRouteListClass();
         generateRouteGroupClass();
     }
@@ -152,7 +155,7 @@ public class RouteProcessor extends AbstractProcessor {
     private void addGroupMap(RouteMeta routeMeta) {
         String path = routeMeta.getPath();
         if (!Utils.isEmpty(path) && path.startsWith("/")) {
-            if (Utils.isEmpty(routeMeta.getGroup())) {
+            if (Utils.isEmpty(routeMeta.getGroup())) {// 如果group为空，添加group
                 routeMeta.setGroup(path.substring(1, path.indexOf('/', 1)));
             }
             List<RouteMeta> routeMetaList = groupMap.get(routeMeta.getGroup());
@@ -169,7 +172,7 @@ public class RouteProcessor extends AbstractProcessor {
     }
 
     /**
-     * 生成Group类
+     * 生成RouteList类
      */
     private void generatedRouteListClass() {
         // Map<MapString, RouteMeta>
@@ -203,10 +206,10 @@ public class RouteProcessor extends AbstractProcessor {
                 );
             }
 
-            // Router$$ModuleName$$default_group
-            String groupClassSimpleName = String.format("RouteList$$%s$$%s", moduleName, groupEntry.getKey());
+            // RouteList$$ModuleName$$default_group
+            String routeListClassSimpleName = String.format("RouteList$$%s$$%s", moduleName, groupEntry.getKey());
             TypeElement iRouteGroup = elementUtil.getTypeElement(RouteConfig.IROUTE_LIST_CLASS_NAME);
-            TypeSpec groupClassType = TypeSpec.classBuilder(groupClassSimpleName)
+            TypeSpec groupClassType = TypeSpec.classBuilder(routeListClassSimpleName)
                     .addSuperinterface(ClassName.get(iRouteGroup))
                     .addModifiers(Modifier.PUBLIC)
                     .addMethod(addRouteMethod.build())
@@ -216,7 +219,7 @@ public class RouteProcessor extends AbstractProcessor {
                         .build()
                         .writeTo(filer);
 
-                rootMap.put(groupEntry.getKey(), groupClassSimpleName);
+                rootMap.put(groupEntry.getKey(), routeListClassSimpleName);
             } catch (IOException e) {
                 e.printStackTrace();
                 log("error..." + e.getMessage());
@@ -228,7 +231,7 @@ public class RouteProcessor extends AbstractProcessor {
         TypeElement iRouteRoot = elementUtil.getTypeElement(RouteConfig.IROUTE_GROUP_CLASS_NAME);
         TypeElement iRouteGroup = elementUtil.getTypeElement(RouteConfig.IROUTE_LIST_CLASS_NAME);
 
-        // Map<String, Class<? extends IRouteGroup>>
+        // Map<String, Class<? extends IRouteList>>
         ParameterizedTypeName routes = ParameterizedTypeName.get(
                 ClassName.get(Map.class),
                 ClassName.get(String.class),

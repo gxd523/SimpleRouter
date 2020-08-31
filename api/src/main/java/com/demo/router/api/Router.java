@@ -127,10 +127,10 @@ public class Router {
                         }
 
                         if ((0 != postcard.getEnterAnim() || 0 != postcard.getExitAnim()) && currentContext instanceof Activity) {
-                            //老版本
+                            // 老版本
                             ((Activity) currentContext).overridePendingTransition(postcard.getEnterAnim(), postcard.getExitAnim());
                         }
-                        //跳转完成
+                        // 跳转完成
                         if (null != callback) {
                             callback.onArrival(postcard);
                         }

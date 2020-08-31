@@ -1,7 +1,7 @@
 apply plugin: 'java-library'
 
 dependencies {
-    //在build/classes/java/main/META-INF/services下生成processor文件,里面记录添加Processor类的路径
+    // 在build/classes/java/main/META-INF/services下生成processor文件,里面记录添加Processor类的路径
     annotationProcessor 'com.google.auto.service:auto-service:1.0-rc4'
     compileOnly 'com.google.auto.service:auto-service:1.0-rc4'
     implementation 'com.squareup:javapoet:1.11.1'// java文件生成器
